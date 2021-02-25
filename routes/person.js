@@ -6,11 +6,30 @@ const express = require("express");
 const router = express.Router();
 
 
+
+
+
+//@URL http://localhost/persons
+//Use model.find() to Search Your Database
+
+
+/* router.get("/", (req, res) => {
+      //use the find method to find the persons by there name
+      Person.find()
+      .then((persons) => res.send(persons))
+      .catch((err) => res.send(err))
+})
+
+ */
+
+
+
+
 //@URL http://localhost:5000/persons
 //@Create and Save a Record of a Model
 
 router.post("/", (req, res) => {
-      const newPerson = new Person({ name: "hager", age: 28, favoriteFoods: ["cake"] });
+      const newPerson = new Person({ name: "jack", age: 20, favoriteFoods: ["burrito"] });
       newPerson
             .save()
             .then(() => res.send("user has been added with success"))
@@ -28,7 +47,8 @@ router.post("/Manypersons", (req, res) => {
       //create Many persons array
       let arrayOfPersons=[
             { name: "sarra", age: 27, favoriteFoods: ["cake", "mango"] },
-            { name: "hager", age: 28, favoriteFoods: ["cake"] }
+            { name: "hager", age: 28, favoriteFoods: ["cake"] },
+            { name: "Marry", age: 20, favoriteFoods: ["cake"] }
       ];
 
       //Create Many People function
@@ -44,8 +64,7 @@ router.post("/Manypersons", (req, res) => {
 
 
 router.get("/name/:name", (req, res) => {
-      //get the name from the req object
-            console.log({...req.params})
+     
       let name =  { ...req.params };
       //use the find method to find the persons by there name
       Person.find(name)
@@ -83,6 +102,63 @@ router.get("/:_id", (req, res) => {
       .then((person) => res.send(person))
       .catch((err) => res.send(err));
 });
+
+
+
+
+//@//@URL http://localhost/persons/id
+//Perform Classic Updates by Running Find, Edit, then Save
+router.put("/update/:name", (req, res) => {
+      let { name } = req.params;
+      Person.findOneAndUpdate({ name },{$set:{"age":20}},{ new: true })
+      .then((person) => res.send(person))
+      .catch((err) => res.send(err));
+});
+
+
+//@URL http://localhost:5000/persons/id
+//Perform Classic Updates by Running Find, Edit, then Save
+router.put("/:_id", (req, res) => {
+      let { _id } = req.params;
+      Person.findByIdAndUpdate({ _id },{$set:{...req.body}})
+      .then(() => res.send("Person Has been Updated"))
+      .catch((err) => res.send(err));
+});
+
+
+//@URL http://localhost:5000/persons/id
+//Delete One Document Using model.findByIdAndRemove
+router.delete("/:_id", (req, res) => {
+  let { _id } = req.params;
+  Person.findByIdAndRemove({ _id })
+    .then(() => res.send(`Person with id = ${ _id} has been deleted`))
+    .catch((err) => res.send(err));
+});
+
+
+
+
+//@URL http://localhost:5000/persons/id
+//Delete One Document Using model.deleteMany
+router.delete("/", (req, res) => {
+  let nameToRemove = "Marry";
+  Person.deleteMany({name:nameToRemove })
+    .then(() => res.send(`Person with name = ${ nameToRemove} has been deleted`))
+    .catch((err) => res.send(err));
+});
+
+
+//@URL http://localhost:5000/persons/
+//Chain Search Query Helpers to Narrow Search Results
+router.get("/", (req, res) => {
+
+ let foodToSearch = { favoriteFoods: { $all: ["burrito"] } };
+
+  Person.find(foodToSearch).sort({name:'asc'}).limit(2).select({age:0}).exec()
+    .then((person) => res.send(person))
+    .catch((err) => res.send(err));
+});
+
 
 
 //export router
