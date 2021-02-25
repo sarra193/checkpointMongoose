@@ -48,7 +48,8 @@ router.post("/Manypersons", (req, res) => {
       let arrayOfPersons=[
             { name: "sarra", age: 27, favoriteFoods: ["cake", "mango"] },
             { name: "hager", age: 28, favoriteFoods: ["cake"] },
-            { name: "Marry", age: 20, favoriteFoods: ["cake"] }
+            { name: "Marry", age: 20, favoriteFoods: ["cake"] },
+            { name: "MarryJ", age: 20, favoriteFoods: ["burrito"] }
       ];
 
       //Create Many People function
